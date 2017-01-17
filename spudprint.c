@@ -122,13 +122,22 @@ double *v[3];
 unsigned long nv3 = spudf->nv * 3;
 double *shellNorms = (shellthick == 0.0) ? (double *) 0 
                        : (double *) malloc( sizeof(double) * nv3);
-#define innerShell shellNorms
+#define otherShell shellNorms
 double *pn, *uvn, scalePn;
-double flipNorm = (shellthick < 0.0) ? -1.0 : 1.0;
+double flipNorm = (shellNorms && (shellthick < 0.0)) ? -1.0 : 1.0;
 
   if ( shellNorms) {
-    /* for each vertex, sum normals of all plates that include that vertex */
+
+    /* For each surface vertex, sum normals of all plates that include that
+     * vertex, store in shellNorms array (malloc'ed above)
+     */
+
+    /* - initialize shellNorms to zero */
     for ( iv=0, pn=shellNorms; iv<nv3; ++iv) *(pn++) = 0.0;
+
+    /* - Loop over plates, add plate normal to shellNorms for each vertex in
+     *   that plate
+     */
     for ( ip=0; ip<spudf->nface; ++ip) {
       uvn = spudf->uvnorms+(3*ip);
       pn = shellNorms + (3*spudf->faceapices[ip]);
@@ -138,8 +147,11 @@ double flipNorm = (shellthick < 0.0) ? -1.0 : 1.0;
       pn = shellNorms + (3*spudf->oe[spudf->faceoeidx[ip] + 1]);
       vadd_c( pn, uvn, pn);
     }
-    /* scale summed normals to shell thickness, add to surface vertex 
-     * ***N.B. surface vector & plate normals occupy same variable space
+    /* Scale per-vertex summed normals to shell thickness, positive inward,
+     * and add to the corresponding surface vertices
+     * ***N.B. These summed plate normals calculated above, and the other
+     *         shell surface vectors immediately below, will occupy the
+     *         same variable space at different times
      */
     for ( iv=0, pn=shellNorms; iv<spudf->nv; ++iv, pn += 3) {
       scalePn = - shellthick / vnorm_c(pn);
@@ -147,7 +159,8 @@ double flipNorm = (shellthick < 0.0) ? -1.0 : 1.0;
     }
   }
 
-/*
+/* Output template, one [facet normal ... endfacet] stanza per plate:
+
 solid
   facet normal 0.00 0.00 1.00
     outer loop
@@ -158,47 +171,77 @@ solid
   endfacet
   facet ...
 endsolid
+
  */
 
   printf( "solid\n");                                               /* header */
 
   for ( ip=0; ip<spudf->nface; ip++) {                              /* plates */
   unsigned long ip3;
-  VEC vn;
+  VEC v01, v02, vcross, vn;
+
+    /* Start with main surface plate (may be inner or outer or only shell) */
+
     ip3 = ip * 3;
-    vscl_c( flipNorm, spudf->uvnorms+ip3, vn);
+
+    vscl_c(flipNorm,spudf->uvnorms+ip3, vn); /* scale by -1 if inner shell */
+
     v[0] = ICOPTR(spudf->faceapices[ip]);
     v[1] = ICOPTR(spudf->oe[spudf->faceoeidx[ip]]);
     v[2] = ICOPTR(spudf->oe[spudf->faceoeidx[ip] + 1]);
     printf( "facet normal %13.7lf %13.7lf %13.7lf\n"          /* plate normal */
           , vn[0], vn[1], vn[2]);
     printf( "  outer loop\n");
-    for ( i=0; i<3; ++i) {                                  /* plate vertices */
-      printf( "    vertex %13.7lf %13.7lf %13.7lf\n"
-            , v[i][0], v[i][1], v[i][2]);
+
+    /* Get cross product of vectors from apex vertex to other vertices */
+    vsub_c( v[1], v[0], v01);
+    vsub_c( v[2], v[0], v02);
+    vcrss_c( v01, v02, vcross);
+
+    /* If that cross product is opposite to the plate normal (vn), reverse
+     * the order of the vertices
+     */
+#   define VFMT "    vertex %13.7lf %13.7lf %13.7lf\n"
+#   define VPRT printf(VFMT, v[i][0], v[i][1], v[i][2])
+    if (vdot_c(vcross,vn)<0.) {
+      for ( i=3; i--; ) { VPRT; }    /* write plate vertices in reverse order */
+    } else {
+      for ( i=0; i<3; ++i) { VPRT; } /* write plate vertices in default order */
     }
+
     printf( "  endloop\nendfacet\n");
 
-    
-    if ( innerShell) {
-    VEC v01, v02, vcross, vn;
-      /* get inner shell vertices */
-      v[0] = innerShell + (3*spudf->faceapices[ip]);
-      v[1] = innerShell + (3*spudf->oe[spudf->faceoeidx[ip]]);
-      v[2] = innerShell + (3*spudf->oe[spudf->faceoeidx[ip] + 1]);
+    /* If shellthick is non-zero, do another stanza from the data in
+     * otherShell (a.k.a. shellNorms via macro above) with the normal
+     * pointing opposite to the, possibly flipped, surface normal in vn
+     */
+    if ( otherShell) {
+
+      /* get other (inner or outer) shell vertices */
+      v[0] = otherShell + (3*spudf->faceapices[ip]);
+      v[1] = otherShell + (3*spudf->oe[spudf->faceoeidx[ip]]);
+      v[2] = otherShell + (3*spudf->oe[spudf->faceoeidx[ip] + 1]);
+
       /* get 2 plate sides, cross them to get unit normal */
       vsub_c( v[1], v[0], v01);
       vsub_c( v[2], v[0], v02);
-      ucrss_c( v01, v02, vn);
-      /* flip normal to ensure normal points in */
-      if ( vdot_c(vn,v[1]) > 0.0) { vminus_c( vn, vn); }
-      vscl_c( flipNorm, vn, vn);
-      printf( "facet normal %13.7lf %13.7lf %13.7lf\n"        /* plate normal */
-            , vn[0], vn[1], vn[2]);
-      printf( "  outer loop\n");
-      for ( i=0; i<3; ++i) {                                /* plate vertices */
-        printf( "    vertex %13.7lf %13.7lf %13.7lf\n"
-              , v[i][0], v[i][1], v[i][2]);
+      ucrss_c( v01, v02, vcross);
+
+      /* Ensure otherShell normal (vcross) points opposite from surface
+       * normal (vn) and therefore away from surface shell
+       */
+      if (vdot_c(vcross,vn)<0.) {
+        /* vcross as calculated points away from surface shell */
+        printf( "facet normal %13.7lf %13.7lf %13.7lf\n"
+              , vcross[0], vcross[1], vcross[2]);   
+        printf( "  outer loop\n");
+        for (i=0;i<3;++i) { VPRT; }  /* write plate vertices in default order */
+      } else {
+        /* vcross as calculated points toward surface shell */
+        printf( "facet normal %13.7lf %13.7lf %13.7lf\n"
+              , -vcross[0], -vcross[1], -vcross[2]);   /* use inverted normal */
+        printf( "  outer loop\n");
+        for (i=3; i--; ) { VPRT; }   /* write plate vertices in reverse order */
       }
       printf( "  endloop\nendfacet\n");
     }

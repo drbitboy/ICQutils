@@ -14,7 +14,7 @@
 ICQURL=http://sbn.psi.edu/pds/asteroid/VO1_SA_VISA_VISB_5_PHOBOSSHAPE_V1_0/data/phobos_quad64q.tab
 LDLIBS=-lm
 
-GASKELLEXES=gaskell2plt testgaskell gaskelltriax spud2stl
+GASKELLEXES=gaskell2plt testgaskell gaskelltriax
 SPUD2EXES=spud2oogl spud2plate spud2raysh spud2stl spud2topo spud2wrl spud2xplate
 EXES=$(GASKELLEXES) $(SPUD2EXES)
 
