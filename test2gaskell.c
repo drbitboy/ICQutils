@@ -1,12 +1,21 @@
-// test2gaskell.c
-//
-// Write out unique vertices of Gaskell shape model, starting at the center
-// of the bottom face of the Gaskell Cube-Cartesian System (CCS), then
-// spiraling around that center out to the edges of the cube bottom face,
-// then around and up the cube side faces, then in to the center of the
-// cube top face.
-
-// cc -o test2gaskell test2gaskell.c gaskellutil.c
+/* test2gaskell.c
+ *
+ * Write out unique vertices of Gaskell ICQ shape model, starting at the
+ * center of the bottom face of the Gaskell Cube-Cartesian System (CCS),
+ * then spiraling around that center out to the edges of the cube bottom
+ * face, then around and up the cube side faces, then in to the center of
+ * the cube top face.
+ *
+ * Precede that by a line with the unique vertex count and triangular plate
+ * count; follow it by the vertex indices for each triangular plate
+ *
+ * Compile:
+ *
+ *   cc -o test2gaskell test2gaskell.c gaskellutil.c
+ *
+ * Usage:
+ *   ./test2gaskell < gaskell.icq > gaskell.plt
+ */
 
 #include <math.h>
 #include <stdio.h>

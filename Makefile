@@ -14,11 +14,18 @@
 ICQURL=http://sbn.psi.edu/pds/asteroid/VO1_SA_VISA_VISB_5_PHOBOSSHAPE_V1_0/data/phobos_quad64q.tab
 LDLIBS=-lm
 
-EXES=test2gaskell testgaskell gaskelltriax
+GASKELLEXES=test2gaskell testgaskell gaskelltriax spud2stl
+SPUD2EXES=spud2oogl spud2plate spud2raysh spud2stl spud2topo spud2wrl spud2xplate
+EXES=$(GASKELLEXES) $(SPUD2EXES)
 
 all: $(EXES) phobos_quad64q.plt
 
-$(EXES): gaskellutil.o
+exes: $(EXES)
+
+$(GASKELLEXES): gaskellutil.o
+
+spud2%: spud2%.c spudshap.c spudplates.c spudview.c spudmisc.c spudface.c spudprint.c
+	$(LINK.c) $^ $(CPPFLAGS) $(LDLIBS) -o $@
 
 phobos_quad64q.plt: test2gaskell
 	wget -O - -nv $(ICQURL) | ./test2gaskell > $@

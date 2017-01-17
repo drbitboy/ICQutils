@@ -1,4 +1,13 @@
-// cc -o gaskelltriax -I.../cspice/include gaskelltriax.c .../cspice/lib/cspice.a -lm
+/* Create triaxial ellipsoid as Gaskell ICQ model
+ *
+ * Compile:
+ *
+ *   cc -o gaskelltriax -I.../cspice/include gaskelltriax.c .../cspice/lib/cspice.a -lm
+ *
+ * Usage:
+ *
+ *   ./gaskeltriax A B C Nicq > triax.icq
+ */
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>

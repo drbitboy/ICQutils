@@ -46,6 +46,33 @@ SpiceDouble lclVec3[3];
   vlcom_c(1.0,vec3out,scalarC,vec3c,vec3out);
   return;
 }
+static void vsub_c(SpiceDouble* v0, SpiceDouble* v1, SpiceDouble* v01) {
+  vlcom_c(1.,v1,-1.,v0,v01);
+  return;
+}
+static void vequ_c(SpiceDouble* vin, SpiceDouble* vout) {
+  vout[0] = vin[0];
+  vout[1] = vin[1];
+  vout[2] = vin[2];
+  return;
+}
+static void vcrss_c(SpiceDouble* v0, SpiceDouble* v1, SpiceDouble* v01) {
+  v01[0] = v0[1]*v1[2] - v1[1]*v0[2];
+  v01[1] = v0[2]*v1[0] - v1[2]*v0[0];
+  v01[2] = v0[0]*v1[1] - v1[0]*v0[1];
+  return;
+}
+static void ucrss_c(SpiceDouble* v0, SpiceDouble* v1, SpiceDouble* uv01) {
+  vcrss_c(v0,v1,uv01);
+  vhat_c(uv01,uv01);
+  return;
+}
+static void vminus_c(SpiceDouble* vin, SpiceDouble* vout) {
+  if (vin[0] != 0.0) vout[0] = -vin[0];
+  if (vin[1] != 0.0) vout[1] = -vin[1];
+  if (vin[2] != 0.0) vout[2] = -vin[2];
+  return;
+}
 
 #endif /* __SPICEUSR_H__ */
 
