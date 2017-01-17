@@ -1,16 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h> /* for getenv */
-#include <string.h>
-#include <math.h>
 #ifdef vms
 char *malloc();
-#else
-#include "localmalloc.h"
 #endif
 
-#include "SpiceUsr.h"
-#include "spudshap.h"
-#include "debug.h"
+#include "spudprint.h"
 
 void spudprint_xplate( SPUDF *spudf) {
 unsigned long	iv, ip, ipn, i0, i1, i2;

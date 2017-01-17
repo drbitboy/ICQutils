@@ -1,12 +1,5 @@
 #include <math.h>
 #include <sys/time.h>
-#include <stdio.h>
-
-#ifdef DEBUG
-#define DPR(A) fprintf A , fflush(stderr)
-#else
-#define DPR(A)
-#endif
 
 /* 	newspud sub.for spud subroutines */
 /* 	12-1 for fine grid */

@@ -1,4 +1,4 @@
-/* test2gaskell.c
+/* gaskell2plt.c
  *
  * Write out unique vertices of Gaskell ICQ shape model, starting at the
  * center of the bottom face of the Gaskell Cube-Cartesian System (CCS),
@@ -24,10 +24,10 @@
 #include "gaskell.h"
 
 const char Usage[] = { "\n\
-Usage:  [T2G_PRINTEXTRAS=yes] test2gaskell [shaper.txt] > shaperunique.txt\n\
+Usage:  [G2P_PRINTEXTRAS=yes] ./gaskell2plt [shaper.txt] > shaper.plt\n\
 e.g.\n\
 \n\
-  ./gaskelltriax 3 2 1 2 | ./test2gaskell > y.y\n\n" };
+  ./gaskelltriax 3 2 1 2 | tee 321.icq | ./gaskell2plt > 321.plt\n\n" };
 
 int
 main( int ac, char** av) {
@@ -47,7 +47,7 @@ long *iverts, *ivertEnd, *ivert;
 char *filename = ac>1 ? av[1] : 0;              // Read Gaskell shape model
 GASKELLSHAPE* gs = gaskellRead( filename );
 
-char *printExtras = getenv("T2G_PRINTEXTRAS");  // debugging
+char *printExtras = getenv("G2P_PRINTEXTRAS");  // debugging
 
   if ( !gs && filename && !strcmp("--help",av[1]) ) {
     fprintf( stderr, "%s", Usage );
@@ -144,7 +144,7 @@ char *printExtras = getenv("T2G_PRINTEXTRAS");  // debugging
       for ( i=0; i < (n?n:1); ++i, ++iv ) {  // n verts per side, but at least 1
 
         // Get pointer to vertex from Gaskell shape structure,
-        // print out vertex coordinates and optional debuggin data,
+        // print out vertex coordinates and optional debugging data,
         // increment pointer to pointer for next vertex
         // step to next vertex [ix,iy] along side
 

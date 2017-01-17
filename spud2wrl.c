@@ -8,19 +8,7 @@
  *    - VIEW, or
  *    - view
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <math.h>
 
-#ifdef vms
-char *malloc();
-#else
-#include "localmalloc.h"
-#endif
-
-#include "debug.h"
 #include "spudshap.h"
 
 #define nvert spudf->nv

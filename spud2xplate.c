@@ -8,7 +8,7 @@
  *    - VIEW, or
  *    - view
  */
-#include <stdio.h>
+
 #include "spudprint.h"
 
 int main( argc, argv) unsigned int argc; char **argv; {

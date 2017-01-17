@@ -1,7 +1,8 @@
 #ifndef __SPUDPRINT_H__
 #define __SPUDPRINT_H__
+/*
 #include <stdio.h>
-#include <stdlib.h> /* for getenv */
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #ifdef vms
@@ -9,6 +10,7 @@ char *malloc();
 #else
 #include "localmalloc.h"
 #endif
+*/
 
 #include "spudshap.h"
 #include "debug.h"

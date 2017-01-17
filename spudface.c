@@ -1,19 +1,9 @@
 /* spudface.c */
 
-#include "debug.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#ifndef vms
-#include "localmalloc.h"
-#else
+#ifdef vms
 char *malloc();
 int exit();
 #endif
-/* #include <X11/Intrinsic.h> */
-/* #include <Xm/Xm.h> */
 
 #include "spudshap.h"
 

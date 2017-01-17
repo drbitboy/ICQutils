@@ -1,20 +1,7 @@
 /* spud2stl.c
  * - convert (plate or spud) shape model file to ascii STL file format
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <math.h>
 
-#ifdef vms
-char *malloc();
-#else
-#include "localmalloc.h"
-#endif
-
-#include "debug.h"
-#include "spudshap.h"
 #include "spudprint.h"
 
 #define np spudf->nface

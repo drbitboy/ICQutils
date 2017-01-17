@@ -48,10 +48,6 @@ V(NPLATE-1)0 V(NPLATE-1)1 V(NPLATE-1)2
 
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
 #include "spudshap.h"
 
 #define ENVNAME "PLATES"
