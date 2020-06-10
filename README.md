@@ -11,6 +11,6 @@ Details
 
 Pre-requisites:  WGET (could be replaced by CURL)
 
-Reference:  http://sbn.psi.edu/pds/asteroid/VO1_SA_VISA_VISB_5_PHOBOSSHAPE_V1_0/
+Reference:  https://sbnarchive.psi.edu/pds3/multi_mission/VO1_SA_VISA_VISB_5_PHOBOSSHAPE_V1_0/
 
 - specifically, see document/icqmodel.asc
