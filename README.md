@@ -11,7 +11,7 @@ Details
 
 Pre-requisites:
 
-* NAiF/SPICE toolkit (see comments at top of Makefile)
+* NAIF/SPICE toolkit (see comments at top of Makefile)
 * WGET (could be replaced by CURL)
 
 Reference:  https://sbnarchive.psi.edu/pds3/multi_mission/VO1_SA_VISA_VISB_5_PHOBOSSHAPE_V1_0/
